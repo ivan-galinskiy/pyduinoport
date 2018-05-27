@@ -18,22 +18,26 @@ void loop()
       r_cmd.arr[i] = byte(Serial.read());
     }
 
+    bool rw_bit = ((r_cmd.c.cmd_code & 0b10000000) != 0);
+    uint8_t reg_type = ((r_cmd.c.cmd_code & 0b01100000) >> 5);
+    uint8_t reg_letter = (r_cmd.c.cmd_code & 0b00011111);
+
     // If we are about to write...
-    if (r_cmd.c.op_code == 1)
+    if (rw_bit == 1)
     {
-      *(general_ports[r_cmd.c.reg_type][r_cmd.c.reg_letter]) = r_cmd.c.contents;
+      *(general_ports[reg_type][reg_letter]) = r_cmd.c.contents;
+      DDRC |= r_cmd.c.contents;
+      PORTC |= r_cmd.c.contents;
     }
 
     // If we are about to read, then send a command to the PC
     else
     {
       CMDu s_cmd;
-      s_cmd.c.op_code = 0;
-      s_cmd.c.reg_type = r_cmd.c.reg_type;
-      s_cmd.c.reg_letter = r_cmd.c.reg_letter;
+      s_cmd.c.cmd_code = r_cmd.c.cmd_code;      
 
       // Load the response with the contents of a given port
-      s_cmd.c.contents = *(general_ports[r_cmd.c.reg_type][r_cmd.c.reg_letter]);
+      s_cmd.c.contents = *(general_ports[reg_type][reg_letter]);
       Serial.write(s_cmd.arr, sizeof(CMD));
     }
     

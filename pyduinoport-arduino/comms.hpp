@@ -1,14 +1,8 @@
 // Define the structure of commands received from and sent to the computer
 typedef struct 
 {
-  // Whether to read or write (read=0, write=1)
-  bool op_code : 1;
-
-  // Type of register to write to (0: PIN, 1:PORT, 2:DDR)
-  uint8_t reg_type: 2;
-
-  // Letter of the register: (B, C, D, E, F)
-  uint8_t reg_letter: 5;
+  // Cmd code that is write/read bit, 2 bits to select PIN/PORT/DDR (0: PIN, 1:PORT, 2:DDR), 5 bits for register letter (B, C, D, E, F)
+  uint8_t cmd_code;
 
   // Contents to write to this register
   uint8_t contents;
