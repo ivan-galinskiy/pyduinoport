@@ -90,8 +90,8 @@ class Arduino:
 if __name__ == "__main__":
     ar = Arduino(port="COM11")
     
-    led_bit = (1 << 7)
-    ar.write_port("DDRC", led_bit)
-    ar.write_port("PORTC", led_bit)
+    led_bit = ((1 << 4) | (1 << 5))
+    ar.write_port("DDRB", led_bit)
+    ar.write_port("PORTB", led_bit)
     
-    print("{0:b}".format(ar.read_port("PORTC")))
+    print("{0:b}".format(ar.read_port("PORTB")))
